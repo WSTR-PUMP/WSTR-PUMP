@@ -215,11 +215,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Monitor gas fees** - Solana transaction costs may vary
 - **Community governance** - This treasury operates under WSTR community vote
 
-## 📞 Support & Contact
-
-- **GitHub Issues**: Report bugs and request features
-- **Community**: Join our Discord for support and discussions
-- **Treasury Dashboard**: [Add link to on-chain dashboard]
 
 ## 🎉 The WSTR Vision
 
@@ -227,4 +222,4 @@ WSTR represents a new paradigm in DeFi: reserve-backed ecosystems powered by str
 
 **Together, we're building the future of Solana's treasury mechanisms.**
 
-For more information, visit our [official website] and join our community!
+For more information, visit our community on X 
