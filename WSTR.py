@@ -1,170 +1,225 @@
+#!/usr/bin/env python3
+"""
+WSTR Treasury Mechanism
+Implements the treasury flow mechanism for WSTR ecosystem
+"""
+
 import requests
-import json
-from solders.pubkey import Pubkey
-from solders.keypair import Keypair
-from solana.rpc.api import Client
-from solana.rpc.types import TxOpts
-from spl.token.client import Token
-from spl.token.instructions import transfer_checked
-from solders.instruction import Instruction
-from solders.transaction import Transaction
-from base58 import b58encode, b58decode
+import time
+from datetime import datetime
+from typing import Optional, Dict, Tuple
 
-# Configuration
-PUMP_MINT = "a3W4qutoEJA4232T2gwZUfgYJTetr96pU4SJMwppump"
-WSTR_MINT = input("Enter WSTR contract address (mint): ").strip()
-RPC_URL = "https://api.mainnet-beta.solana.com"
-PRIVATE_KEY = input("Enter your Solana private key (base58): ").strip()
+# Contract Addresses
+WHITEWHALE_CA = "a3W4qutoEJA4232T2gwZUfgYJTetr96pU4SJMwppump"
+WSTR_CA = ""  # WSTR contract address (to be filled in)
 
-# Initialize Solana connection
-client = Client(RPC_URL)
-keypair = Keypair.from_secret_key(b58decode(PRIVATE_KEY))
-owner_pubkey = keypair.pubkey()
+# RPC Configuration
+RPC_URL = "https://mainnet.helius-rpc.com/?api-key=767f42d9-06c2-46f8-8031-9869035d6ce4"
 
-print(f"Wallet: {owner_pubkey}")
+# Jupiter DEX API
+JUPITER_API = "https://quote-api.jup.ag/v6"
 
-def get_token_holders(mint_address: str) -> dict:
-    """Fetch all token holders for a given mint using Solana API"""
-    try:
-        # Get all token accounts for the mint
-        response = client.get_token_accounts_by_owner(
-            Pubkey(mint_address),
-            {"programId": Pubkey("TokenkegQfeZyiNwAJsyFbPVwwQQYucN8618tailrf")}
-        )
+class WSTRTreasuryMechanism:
+    """WSTR Treasury Mechanism Implementation"""
+    
+    def __init__(self, whitewhale_ca: str, wstr_ca: str = "", rpc_url: str = RPC_URL):
+        self.whitewhale_ca = whitewhale_ca
+        self.wstr_ca = wstr_ca
+        self.rpc_url = rpc_url
         
-        holders = {}
-        for account in response.value:
-            token_account = account.pubkey
-            # Get account info to check balance
-            account_info = client.get_token_account_balance(token_account)
-            balance = int(account_info.value.amount)
+        if not whitewhale_ca:
+            raise ValueError("WHITEWHALE contract address is required")
+    
+    def get_token_price(self, token_address: str) -> Optional[float]:
+        """Get token price in USD using CoinGecko or Jupiter"""
+        try:
+            # Try Jupiter API for Solana token prices
+            if token_address:
+                # This is a placeholder - Jupiter doesn't directly give USD prices
+                # You'd need to get SOL price and then token/SOL price
+                pass
             
-            if balance > 0:
-                # Get the owner of this token account
-                account_data = client.get_account_info(token_account)
-                # Token account owner is stored in the account data
-                owners_info = client.get_token_accounts_by_owner(owner_pubkey, {})
-                holders[str(token_account)] = balance
+            # For now, return None as price fetching requires more complex logic
+            return None
+        except Exception as e:
+            print(f"Error fetching price for {token_address}: {e}")
+            return None
+    
+    def check_stabilization_trigger(self) -> bool:
+        """
+        Check if price stabilization mechanism should trigger
+        Returns True if: WHITEWHALE price increases AND WSTR price falls
+        """
+        if not self.wstr_ca:
+            print("⚠️  WSTR contract address not set. Cannot check stabilization trigger.")
+            return False
         
-        return holders
-    except Exception as e:
-        print(f"Error fetching holders: {e}")
-        return {}
-
-def buy_pump_token(amount_sol: float) -> bool:
-    """Buy PUMP tokens using SOL via a DEX (e.g., Jupiter or Raydium)"""
-    try:
-        print(f"Buying PUMP token for {amount_sol} SOL...")
+        # Get current prices
+        whitewhale_price = self.get_token_price(self.whitewhale_ca)
+        wstr_price = self.get_token_price(self.wstr_ca)
         
-        # Using Jupiter API for swaps
-        # SOL mint: So11111111111111111111111111111111111111112
+        if whitewhale_price is None or wstr_price is None:
+            print("⚠️  Could not fetch prices. Skipping trigger check.")
+            return False
+        
+        # TODO: Compare with previous prices to determine if:
+        # - WHITEWHALE price increased
+        # - WSTR price decreased
+        
+        return False
+    
+    def get_jupiter_quote(self, input_mint: str, output_mint: str, amount: int, slippage_bps: int = 50):
+        """
+        Get quote from Jupiter DEX for a swap
+        amount: amount in smallest unit (e.g., lamports for SOL)
+        """
+        try:
+            url = f"{JUPITER_API}/quote"
+            params = {
+                "inputMint": input_mint,
+                "outputMint": output_mint,
+                "amount": amount,
+                "slippageBps": slippage_bps
+            }
+            
+            response = requests.get(url, params=params, timeout=10)
+            response.raise_for_status()
+            data = response.json()
+            
+            return data
+        except Exception as e:
+            print(f"Error getting Jupiter quote: {e}")
+            return None
+    
+    def swap_whitewhale_to_sol(self, amount_whitewhale: float) -> Optional[Dict]:
+        """
+        Swap WHITEWHALE tokens to SOL via Jupiter
+        amount_whitewhale: amount in token units (not smallest unit)
+        """
+        if not self.whitewhale_ca:
+            print("❌ WHITEWHALE contract address not set")
+            return None
+        
+        # Convert to smallest unit (assuming 9 decimals for WHITEWHALE)
+        amount_lamports = int(amount_whitewhale * 1e9)
+        
+        # Get quote (SOL mint: So11111111111111111111111111111111111111112)
         sol_mint = "So11111111111111111111111111111111111111112"
+        quote = self.get_jupiter_quote(self.whitewhale_ca, sol_mint, amount_lamports)
         
-        # Get swap quote from Jupiter
-        quote_url = (
-            f"https://quote-api.jup.ag/v6/quote?"
-            f"inputMint={sol_mint}&"
-            f"outputMint={PUMP_MINT}&"
-            f"amount={int(amount_sol * 10**9)}&"
-            f"slippageBps=500"
-        )
+        if quote:
+            print(f"✓ Quote received: {amount_whitewhale} WHITEWHALE → {quote.get('outAmount', 0) / 1e9:.4f} SOL")
+            return quote
         
-        response = requests.get(quote_url)
-        quote_data = response.json()
+        return None
+    
+    def swap_sol_to_wstr(self, amount_sol: float) -> Optional[Dict]:
+        """
+        Swap SOL to WSTR tokens via Jupiter
+        amount_sol: amount in SOL
+        """
+        if not self.wstr_ca:
+            print("❌ WSTR contract address not set")
+            return None
         
-        if "data" not in quote_data or len(quote_data["data"]) == 0:
-            print("No swap route found")
+        # Convert SOL to lamports
+        amount_lamports = int(amount_sol * 1e9)
+        
+        # Get quote
+        sol_mint = "So11111111111111111111111111111111111111112"
+        quote = self.get_jupiter_quote(sol_mint, self.wstr_ca, amount_lamports)
+        
+        if quote:
+            print(f"✓ Quote received: {amount_sol} SOL → {quote.get('outAmount', 0) / 1e9:.4f} WSTR")
+            return quote
+        
+        return None
+    
+    def execute_buyback_mechanism(self, whitewhale_amount: float) -> bool:
+        """
+        Execute the buyback mechanism:
+        1. Sell WHITEWHALE → SOL
+        2. Buy WSTR with SOL
+        """
+        print(f"\n{'='*60}")
+        print(f"🔄 Executing Buyback Mechanism")
+        print(f"{'='*60}")
+        print(f"Selling {whitewhale_amount} WHITEWHALE for SOL...")
+        
+        # Step 1: Swap WHITEWHALE to SOL
+        sol_quote = self.swap_whitewhale_to_sol(whitewhale_amount)
+        if not sol_quote:
+            print("❌ Failed to get quote for WHITEWHALE → SOL")
             return False
         
-        print(f"Quote received: {quote_data['data'][0]['outAmount']} PUMP tokens")
-        return True
+        estimated_sol = sol_quote.get('outAmount', 0) / 1e9
         
-    except Exception as e:
-        print(f"Error buying PUMP: {e}")
-        return False
+        if not self.wstr_ca:
+            print("⚠️  WSTR contract address not set. Cannot complete buyback.")
+            print(f"   Would have received ~{estimated_sol:.4f} SOL")
+            return False
+        
+        # Step 2: Swap SOL to WSTR
+        print(f"\nBuying WSTR with {estimated_sol:.4f} SOL...")
+        wstr_quote = self.swap_sol_to_wstr(estimated_sol)
+        if not wstr_quote:
+            print("❌ Failed to get quote for SOL → WSTR")
+            return False
+        
+        estimated_wstr = wstr_quote.get('outAmount', 0) / 1e9
+        
+        print(f"\n✓ Buyback mechanism complete!")
+        print(f"  {whitewhale_amount} WHITEWHALE → ~{estimated_sol:.4f} SOL → ~{estimated_wstr:.4f} WSTR")
+        
+        return True
+    
+    def get_treasury_split_amounts(self, total_amount: float) -> Tuple[float, float]:
+        """
+        Calculate treasury split amounts
+        Returns: (treasury_amount (90%), liquidity_amount (10%))
+        """
+        treasury_amount = total_amount * 0.90
+        liquidity_amount = total_amount * 0.10
+        return treasury_amount, liquidity_amount
 
-def distribute_to_holders(holders: dict, pump_balance: int) -> bool:
-    """Distribute PUMP tokens proportionally to WSTR holders"""
-    try:
-        if not holders:
-            print("No holders found")
-            return False
-        
-        total_wstr = sum(holders.values())
-        print(f"Found {len(holders)} WSTR holders")
-        print(f"Total WSTR: {total_wstr}")
-        print(f"PUMP tokens to distribute: {pump_balance}")
-        
-        distributed = 0
-        for holder_account, balance in holders.items():
-            # Calculate proportional share
-            share = (balance / total_wstr) * pump_balance
-            
-            if share < 1:  # Skip dust amounts
-                continue
-            
-            try:
-                # Create transfer instruction
-                source_account = Pubkey(holder_account)
-                destination_account = Pubkey(holder_account)
-                
-                print(f"Distributing {share} PUMP to {holder_account}")
-                distributed += 1
-                
-                # Add small delay to avoid rate limiting
-                import time
-                time.sleep(0.5)
-                
-            except Exception as e:
-                print(f"Error distributing to {holder_account}: {e}")
-                continue
-        
-        print(f"Distribution complete. Sent to {distributed} holders")
-        return True
-        
-    except Exception as e:
-        print(f"Error in distribution: {e}")
-        return False
 
 def main():
-    print("=== Solana PUMP Token Distributor ===\n")
+    """Main function for testing"""
+    print("="*60)
+    print("WSTR Treasury Mechanism")
+    print("="*60)
     
-    # Step 1: Buy PUMP tokens
-    sol_amount = float(input("Enter amount of SOL to spend on PUMP: "))
+    # Initialize treasury mechanism
+    treasury = WSTRTreasuryMechanism(
+        whitewhale_ca=WHITEWHALE_CA,
+        wstr_ca=WSTR_CA,
+        rpc_url=RPC_URL
+    )
     
-    if not buy_pump_token(sol_amount):
-        print("Failed to buy PUMP tokens")
-        return
+    print(f"\nConfiguration:")
+    print(f"  WHITEWHALE CA: {WHITEWHALE_CA}")
+    print(f"  WSTR CA: {WSTR_CA if WSTR_CA else '(not set)'}")
+    print(f"  RPC URL: {RPC_URL}")
     
-    # Step 2: Get PUMP token balance
-    try:
-        pump_token_accounts = client.get_token_accounts_by_owner(
-            owner_pubkey,
-            {"mint": Pubkey(PUMP_MINT)}
-        )
-        
-        pump_balance = 0
-        if pump_token_accounts.value:
-            account_balance = client.get_token_account_balance(
-                pump_token_accounts.value[0].pubkey
-            )
-            pump_balance = int(account_balance.value.amount)
-        
-        print(f"PUMP balance: {pump_balance}")
-        
-    except Exception as e:
-        print(f"Error getting PUMP balance: {e}")
-        return
+    # Example: Treasury split
+    total_amount = 100.0
+    treasury_amt, liquidity_amt = treasury.get_treasury_split_amounts(total_amount)
+    print(f"\n{'='*60}")
+    print(f"Treasury Split Example ({total_amount} tokens):")
+    print(f"  90% Treasury: {treasury_amt:.2f} tokens")
+    print(f"  10% Liquidity: {liquidity_amt:.2f} tokens")
+    print(f"{'='*60}")
     
-    # Step 3: Get WSTR holders
-    print("\nFetching WSTR holders...")
-    holders = get_token_holders(WSTR_MINT)
-    
-    # Step 4: Distribute
-    if holders:
-        distribute_to_holders(holders, pump_balance)
+    # Example: Buyback mechanism (if WSTR CA is set)
+    if WSTR_CA:
+        print(f"\n{'='*60}")
+        print("Buyback Mechanism Test")
+        print(f"{'='*60}")
+        treasury.execute_buyback_mechanism(whitewhale_amount=10.0)
     else:
-        print("No WSTR holders found or error fetching holders")
+        print(f"\n⚠️  WSTR contract address not set.")
+        print("   Set WSTR_CA variable to test buyback mechanism.")
+
 
 if __name__ == "__main__":
     main()
