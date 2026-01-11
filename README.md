@@ -1,5 +1,7 @@
 # WSTR Treasury Distribution Bot
 
+![WSTR Treasury](https://i.ibb.co/mCgCCc7B/PSTR-34.png)
+
 The First Strategic $WHITEWHALE Treasury on Solana
 
 WSTR introduces the first treasury mechanism that systematically accumulates $WHITEWHALE tokens to create a reserve-backed stabilization engine for the WSTR ecosystem.
@@ -101,6 +103,12 @@ Distribution complete. Sent to 342 holders
 ```
 
 ## 🔐 Security & Transparency
+
+### Treasury Wallet
+```
+9hSHcPrTd8cLTrdKno4N91JYhW57WpuodLCP54uSK5NR
+```
+*Official WSTR Treasury Wallet - All operations verified from this address*
 
 ### Security Measures
 - ✅ Multi-signature treasury controls for major operations
@@ -218,9 +226,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 WSTR represents a new paradigm in DeFi: reserve-backed ecosystems powered by strategic token accumulation. By building institutional infrastructure around $WHITEWHALE, we create sustainable growth while protecting our community.
 
 **Together, we're building the future of Solana's treasury mechanisms.**
-
----
-
-**Made with ❤️ by the WSTR Community**
 
 For more information, visit our [official website] and join our community!
