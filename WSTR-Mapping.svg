@@ -208,6 +208,9 @@
                     <marker id="arrowheadOrange" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
                         <polygon points="0 0, 10 3, 0 6" fill="#FFB74D"/>
                     </marker>
+                    <marker id="arrowheadGreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                        <polygon points="0 0, 10 3, 0 6" fill="#66BB6A"/>
+                    </marker>
                     
                     <!-- Glow filter -->
                     <filter id="glow">
@@ -220,7 +223,7 @@
                 </defs>
                 
                 <!-- Background -->
-                <rect width="1000" height="700" fill="#0f1729"/>
+                <rect width="1000" height="850" fill="#0f1729"/>
                 
                 <!-- Title -->
                 <text x="500" y="35" font-size="24" font-weight="bold" fill="#4FC3F7" text-anchor="middle" filter="url(#glow)">🌊 WSTR ECOSYSTEM FLOW</text>
@@ -287,6 +290,26 @@
                 <text x="620" y="600" font-size="12" fill="#E0F7FA">✓ Reduced Price Slippage</text>
                 <text x="620" y="620" font-size="12" fill="#E0F7FA">✓ Stabilized Price Charts</text>
                 <text x="620" y="640" font-size="12" fill="#E0F7FA">✓ Institutional Confidence</text>
+                
+                <!-- Price Stabilization Mechanism -->
+                <!-- Arrow from Treasury to Stabilization trigger -->
+                <line x1="390" y1="450" x2="500" y2="680" stroke="#66BB6A" stroke-width="3" marker-end="url(#arrowheadGreen)" stroke-dasharray="5,5"/>
+                
+                <!-- Stabilization Trigger Box -->
+                <rect x="400" y="680" width="200" height="90" rx="15" fill="rgba(102, 187, 106, 0.2)" stroke="#66BB6A" stroke-width="2" stroke-dasharray="8,4"/>
+                <text x="500" y="705" font-size="14" font-weight="bold" fill="#66BB6A" text-anchor="middle">⚡ Price Stabilization</text>
+                <text x="500" y="725" font-size="11" fill="#E0F7FA" text-anchor="middle">Trigger Condition:</text>
+                <text x="500" y="742" font-size="11" fill="#E0F7FA" text-anchor="middle">$WHITEWHALE ↑ AND $WSTR ↓</text>
+                <text x="500" y="759" font-size="11" fill="#E0F7FA" text-anchor="middle">When activated:</text>
+                
+                <!-- Arrow from trigger to buyback -->
+                <line x1="500" y1="770" x2="500" y2="800" stroke="#66BB6A" stroke-width="4" marker-end="url(#arrowheadGreen)"/>
+                
+                <!-- Buyback Process -->
+                <rect x="350" y="800" width="300" height="90" rx="15" fill="url(#stabilizeGrad)" stroke="#388E3C" stroke-width="2"/>
+                <text x="500" y="830" font-size="16" font-weight="bold" fill="white" text-anchor="middle">🔄 Buyback Mechanism</text>
+                <text x="500" y="850" font-size="12" fill="#E0F7FA" text-anchor="middle">Sell $WHITEWHALE → SOL → Buy $WSTR</text>
+                <text x="500" y="870" font-size="12" fill="#E0F7FA" text-anchor="middle">Price Support &amp; Stabilization</text>
             </svg>
         </div>
         
