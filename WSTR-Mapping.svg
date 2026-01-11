@@ -1,107 +1,309 @@
-<svg width="1000" height="700" viewBox="0 0 1000 700" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-        <!-- Gradients -->
-        <linearGradient id="inputGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#00BCD4;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#0097A7;stop-opacity:1" />
-        </linearGradient>
-        <linearGradient id="treasuryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#4FC3F7;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#0277BD;stop-opacity:1" />
-        </linearGradient>
-        <linearGradient id="liquidityGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#FFB74D;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#F57F17;stop-opacity:1" />
-        </linearGradient>
-        <linearGradient id="splitGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#7C4DFF;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#5E35B1;stop-opacity:1" />
-        </linearGradient>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WSTR Treasury Flow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         
-        <!-- Arrow marker -->
-        <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-            <polygon points="0 0, 10 3, 0 6" fill="#4FC3F7"/>
-        </marker>
-        <marker id="arrowheadOrange" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-            <polygon points="0 0, 10 3, 0 6" fill="#FFB74D"/>
-        </marker>
+        body {
+            margin: 0;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #0f1729 0%, #1a2b4d 50%, #0f1729 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
         
-        <!-- Glow filter -->
-        <filter id="glow">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-            <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-        </filter>
-    </defs>
-    
-    <!-- Background -->
-    <rect width="1000" height="700" fill="#0f1729"/>
-    
-    <!-- Title -->
-    <text x="500" y="35" font-size="24" font-weight="bold" fill="#4FC3F7" text-anchor="middle" filter="url(#glow)">🌊 WSTR ECOSYSTEM FLOW</text>
-    
-    <!-- Stage 1: SOL Input -->
-    <rect x="350" y="70" width="300" height="80" rx="15" fill="url(#inputGrad)" stroke="#00BCD4" stroke-width="2"/>
-    <text x="500" y="105" font-size="18" font-weight="bold" fill="white" text-anchor="middle">💰 SOL Input</text>
-    <text x="500" y="130" font-size="13" fill="#E0F7FA" text-anchor="middle">User Deposits SOL</text>
-    
-    <!-- Arrow down -->
-    <line x1="500" y1="150" x2="500" y2="180" stroke="#4FC3F7" stroke-width="4" marker-end="url(#arrowhead)"/>
-    
-    <!-- Stage 2: Purchase WHITEWHALE -->
-    <rect x="350" y="180" width="300" height="80" rx="15" fill="url(#inputGrad)" stroke="#00BCD4" stroke-width="2"/>
-    <text x="500" y="215" font-size="18" font-weight="bold" fill="white" text-anchor="middle">🔄 Purchase via Jupiter DEX</text>
-    <text x="500" y="240" font-size="13" fill="#E0F7FA" text-anchor="middle">SOL → $WHITEWHALE Swap</text>
-    
-    <!-- Arrow down -->
-    <line x1="500" y1="260" x2="500" y2="290" stroke="#4FC3F7" stroke-width="4" marker-end="url(#arrowhead)"/>
-    
-    <!-- Stage 3: Split Decision -->
-    <rect x="350" y="290" width="300" height="80" rx="15" fill="url(#splitGrad)" stroke="#9575CD" stroke-width="2"/>
-    <text x="500" y="325" font-size="18" font-weight="bold" fill="white" text-anchor="middle">⚙️ Treasury Split Mechanism</text>
-    <text x="500" y="350" font-size="13" fill="#E0F7FA" text-anchor="middle">90% Treasury | 10% Liquidity</text>
-    
-    <!-- Arrow Left (90%) -->
-    <line x1="350" y1="345" x2="220" y2="400" stroke="#4FC3F7" stroke-width="4" marker-end="url(#arrowhead)"/>
-    <text x="270" y="365" font-size="14" font-weight="bold" fill="#FFB74D">90%</text>
-    
-    <!-- Arrow Right (10%) -->
-    <line x1="650" y1="345" x2="780" y2="400" stroke="#FFB74D" stroke-width="4" marker-end="url(#arrowheadOrange)"/>
-    <text x="710" y="365" font-size="14" font-weight="bold" fill="#FFB74D">10%</text>
-    
-    <!-- LEFT PATH: Treasury Accumulation (90%) -->
-    <rect x="50" y="400" width="340" height="100" rx="15" fill="url(#treasuryGrad)" stroke="#0277BD" stroke-width="2"/>
-    <text x="220" y="435" font-size="18" font-weight="bold" fill="white" text-anchor="middle">🏛️ Treasury Reserve</text>
-    <text x="220" y="460" font-size="12" fill="#E0F7FA" text-anchor="middle">Strategic $WHITEWHALE</text>
-    <text x="220" y="478" font-size="12" fill="#E0F7FA" text-anchor="middle">Accumulation &amp; Stabilization</text>
-    
-    <!-- Treasury Arrow down -->
-    <line x1="220" y1="500" x2="220" y2="530" stroke="#4FC3F7" stroke-width="4" marker-end="url(#arrowhead)"/>
-    
-    <!-- Treasury Features -->
-    <rect x="50" y="530" width="340" height="130" rx="15" fill="rgba(79, 195, 247, 0.15)" stroke="#4FC3F7" stroke-width="2" stroke-dasharray="5,5"/>
-    <text x="220" y="555" font-size="14" font-weight="bold" fill="#4FC3F7" text-anchor="middle">Treasury Benefits</text>
-    <text x="60" y="580" font-size="12" fill="#E0F7FA">✓ Market Compression Defense</text>
-    <text x="60" y="600" font-size="12" fill="#E0F7FA">✓ Downside Price Protection</text>
-    <text x="60" y="620" font-size="12" fill="#E0F7FA">✓ Growth Exposure to $WHITEWHALE</text>
-    <text x="60" y="640" font-size="12" fill="#E0F7FA">✓ Verifiable On-Chain Operations</text>
-    
-    <!-- RIGHT PATH: Liquidity Injection (10%) -->
-    <rect x="610" y="400" width="340" height="100" rx="15" fill="url(#liquidityGrad)" stroke="#F57F17" stroke-width="2"/>
-    <text x="780" y="435" font-size="18" font-weight="bold" fill="white" text-anchor="middle">💧 LP Liquidity Injection</text>
-    <text x="780" y="460" font-size="12" fill="#E0F7FA" text-anchor="middle">Strengthen Liquidity Pools</text>
-    <text x="780" y="478" font-size="12" fill="#E0F7FA" text-anchor="middle">Permanent Market Depth</text>
-    
-    <!-- Liquidity Arrow down -->
-    <line x1="780" y1="500" x2="780" y2="530" stroke="#FFB74D" stroke-width="4" marker-end="url(#arrowheadOrange)"/>
-    
-    <!-- Liquidity Features -->
-    <rect x="610" y="530" width="340" height="130" rx="15" fill="rgba(255, 183, 77, 0.15)" stroke="#FFB74D" stroke-width="2" stroke-dasharray="5,5"/>
-    <text x="780" y="555" font-size="14" font-weight="bold" fill="#FFB74D" text-anchor="middle">Liquidity Benefits</text>
-    <text x="620" y="580" font-size="12" fill="#E0F7FA">✓ Thickened Order Books</text>
-    <text x="620" y="600" font-size="12" fill="#E0F7FA">✓ Reduced Price Slippage</text>
-    <text x="620" y="620" font-size="12" fill="#E0F7FA">✓ Stabilized Price Charts</text>
-    <text x="620" y="640" font-size="12" fill="#E0F7FA">✓ Institutional Confidence</text>
-</svg>
+        /* Animated background particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(79, 195, 247, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 183, 77, 0.1) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+            z-index: 0;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        .container {
+            background: rgba(15, 23, 41, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 50px;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(100, 200, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            max-width: 1200px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h1 {
+            text-align: center;
+            color: #4FC3F7;
+            margin-bottom: 40px;
+            font-size: 32px;
+            text-shadow: 
+                0 0 20px rgba(79, 195, 247, 0.5),
+                0 2px 4px rgba(0, 0, 0, 0.3);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .diagram-wrapper {
+            background: rgba(15, 23, 41, 0.5);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(100, 200, 255, 0.1);
+        }
+        
+        svg {
+            display: block;
+            margin: 0 auto;
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.4));
+            width: 100%;
+            height: auto;
+            max-width: 1000px;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+            padding-top: 30px;
+            border-top: 2px solid rgba(100, 200, 255, 0.2);
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 500;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .legend-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .legend-box {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .legend-box.input { 
+            background: linear-gradient(135deg, #00BCD4 0%, #0097A7 100%);
+        }
+        
+        .legend-box.treasury { 
+            background: linear-gradient(135deg, #4FC3F7 0%, #0277BD 100%);
+        }
+        
+        .legend-box.liquidity { 
+            background: linear-gradient(135deg, #FFB74D 0%, #F57F17 100%);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+                margin-bottom: 30px;
+            }
+            
+            .diagram-wrapper {
+                padding: 15px;
+            }
+            
+            .legend {
+                gap: 20px;
+            }
+            
+            .legend-item {
+                font-size: 13px;
+                padding: 8px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌊 WSTR ECOSYSTEM FLOW</h1>
+        <div class="diagram-wrapper">
+            <svg width="1000" height="850" viewBox="0 0 1000 850" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <!-- Gradients -->
+                    <linearGradient id="inputGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#00BCD4;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#0097A7;stop-opacity:1" />
+                    </linearGradient>
+                    <linearGradient id="treasuryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#4FC3F7;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#0277BD;stop-opacity:1" />
+                    </linearGradient>
+                    <linearGradient id="liquidityGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#FFB74D;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#F57F17;stop-opacity:1" />
+                    </linearGradient>
+                    <linearGradient id="splitGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#7C4DFF;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#5E35B1;stop-opacity:1" />
+                    </linearGradient>
+                    <linearGradient id="stabilizeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#66BB6A;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#388E3C;stop-opacity:1" />
+                    </linearGradient>
+                    
+                    <!-- Arrow markers -->
+                    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                        <polygon points="0 0, 10 3, 0 6" fill="#4FC3F7"/>
+                    </marker>
+                    <marker id="arrowheadOrange" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                        <polygon points="0 0, 10 3, 0 6" fill="#FFB74D"/>
+                    </marker>
+                    
+                    <!-- Glow filter -->
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+                
+                <!-- Background -->
+                <rect width="1000" height="700" fill="#0f1729"/>
+                
+                <!-- Title -->
+                <text x="500" y="35" font-size="24" font-weight="bold" fill="#4FC3F7" text-anchor="middle" filter="url(#glow)">🌊 WSTR ECOSYSTEM FLOW</text>
+                
+                <!-- Stage 1: SOL Input -->
+                <rect x="350" y="70" width="300" height="80" rx="15" fill="url(#inputGrad)" stroke="#00BCD4" stroke-width="2"/>
+                <text x="500" y="105" font-size="18" font-weight="bold" fill="white" text-anchor="middle">💰 SOL Input</text>
+                <text x="500" y="130" font-size="13" fill="#E0F7FA" text-anchor="middle">User Deposits SOL</text>
+                
+                <!-- Arrow down -->
+                <line x1="500" y1="150" x2="500" y2="180" stroke="#4FC3F7" stroke-width="4" marker-end="url(#arrowhead)"/>
+                
+                <!-- Stage 2: Purchase WHITEWHALE -->
+                <rect x="350" y="180" width="300" height="80" rx="15" fill="url(#inputGrad)" stroke="#00BCD4" stroke-width="2"/>
+                <text x="500" y="215" font-size="18" font-weight="bold" fill="white" text-anchor="middle">🔄 Purchase via Jupiter DEX</text>
+                <text x="500" y="240" font-size="13" fill="#E0F7FA" text-anchor="middle">SOL → $WHITEWHALE Swap</text>
+                
+                <!-- Arrow down -->
+                <line x1="500" y1="260" x2="500" y2="290" stroke="#4FC3F7" stroke-width="4" marker-end="url(#arrowhead)"/>
+                
+                <!-- Stage 3: Split Decision -->
+                <rect x="350" y="290" width="300" height="80" rx="15" fill="url(#splitGrad)" stroke="#9575CD" stroke-width="2"/>
+                <text x="500" y="325" font-size="18" font-weight="bold" fill="white" text-anchor="middle">⚙️ Treasury Split Mechanism</text>
+                <text x="500" y="350" font-size="13" fill="#E0F7FA" text-anchor="middle">90% Treasury | 10% Liquidity</text>
+                
+                <!-- Arrow Left (90%) -->
+                <line x1="350" y1="345" x2="220" y2="400" stroke="#4FC3F7" stroke-width="4" marker-end="url(#arrowhead)"/>
+                <text x="270" y="365" font-size="14" font-weight="bold" fill="#FFB74D">90%</text>
+                
+                <!-- Arrow Right (10%) -->
+                <line x1="650" y1="345" x2="780" y2="400" stroke="#FFB74D" stroke-width="4" marker-end="url(#arrowheadOrange)"/>
+                <text x="710" y="365" font-size="14" font-weight="bold" fill="#FFB74D">10%</text>
+                
+                <!-- LEFT PATH: Treasury Accumulation (90%) -->
+                <rect x="50" y="400" width="340" height="100" rx="15" fill="url(#treasuryGrad)" stroke="#0277BD" stroke-width="2"/>
+                <text x="220" y="435" font-size="18" font-weight="bold" fill="white" text-anchor="middle">🏛️ Treasury Reserve</text>
+                <text x="220" y="460" font-size="12" fill="#E0F7FA" text-anchor="middle">Strategic $WHITEWHALE</text>
+                <text x="220" y="478" font-size="12" fill="#E0F7FA" text-anchor="middle">Accumulation &amp; Stabilization</text>
+                
+                <!-- Treasury Arrow down -->
+                <line x1="220" y1="500" x2="220" y2="530" stroke="#4FC3F7" stroke-width="4" marker-end="url(#arrowhead)"/>
+                
+                <!-- Treasury Features -->
+                <rect x="50" y="530" width="340" height="130" rx="15" fill="rgba(79, 195, 247, 0.15)" stroke="#4FC3F7" stroke-width="2" stroke-dasharray="5,5"/>
+                <text x="220" y="555" font-size="14" font-weight="bold" fill="#4FC3F7" text-anchor="middle">Treasury Benefits</text>
+                <text x="60" y="580" font-size="12" fill="#E0F7FA">✓ Market Compression Defense</text>
+                <text x="60" y="600" font-size="12" fill="#E0F7FA">✓ Downside Price Protection</text>
+                <text x="60" y="620" font-size="12" fill="#E0F7FA">✓ Growth Exposure to $WHITEWHALE</text>
+                <text x="60" y="640" font-size="12" fill="#E0F7FA">✓ Verifiable On-Chain Operations</text>
+                
+                <!-- RIGHT PATH: Liquidity Injection (10%) -->
+                <rect x="610" y="400" width="340" height="100" rx="15" fill="url(#liquidityGrad)" stroke="#F57F17" stroke-width="2"/>
+                <text x="780" y="435" font-size="18" font-weight="bold" fill="white" text-anchor="middle">💧 LP Liquidity Injection</text>
+                <text x="780" y="460" font-size="12" fill="#E0F7FA" text-anchor="middle">Strengthen Liquidity Pools</text>
+                <text x="780" y="478" font-size="12" fill="#E0F7FA" text-anchor="middle">Permanent Market Depth</text>
+                
+                <!-- Liquidity Arrow down -->
+                <line x1="780" y1="500" x2="780" y2="530" stroke="#FFB74D" stroke-width="4" marker-end="url(#arrowheadOrange)"/>
+                
+                <!-- Liquidity Features -->
+                <rect x="610" y="530" width="340" height="130" rx="15" fill="rgba(255, 183, 77, 0.15)" stroke="#FFB74D" stroke-width="2" stroke-dasharray="5,5"/>
+                <text x="780" y="555" font-size="14" font-weight="bold" fill="#FFB74D" text-anchor="middle">Liquidity Benefits</text>
+                <text x="620" y="580" font-size="12" fill="#E0F7FA">✓ Thickened Order Books</text>
+                <text x="620" y="600" font-size="12" fill="#E0F7FA">✓ Reduced Price Slippage</text>
+                <text x="620" y="620" font-size="12" fill="#E0F7FA">✓ Stabilized Price Charts</text>
+                <text x="620" y="640" font-size="12" fill="#E0F7FA">✓ Institutional Confidence</text>
+            </svg>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box input"></div>
+                <span>Input &amp; Purchase</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box treasury"></div>
+                <span>Treasury (90%)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box liquidity"></div>
+                <span>Liquidity (10%)</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
